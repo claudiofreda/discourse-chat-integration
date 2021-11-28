@@ -2,7 +2,7 @@ import I18n from "I18n";
 import ModalFunctionality from "discourse/mixins/modal-functionality";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import { default as computed, on } from "discourse-common/utils/decorators";
+import computed, { on } from "discourse-common/utils/decorators";
 
 export default Ember.Controller.extend(ModalFunctionality, {
   @on("init")
@@ -28,7 +28,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
       }
       this.set("loading", true);
 
-      ajax("/admin/plugins/chat/test", {
+      ajax("/admin/plugins/chat-integration/test", {
         data: {
           channel_id: this.get("model.channel.id"),
           topic_id: this.get("model.topic_id"),
