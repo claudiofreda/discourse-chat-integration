@@ -143,9 +143,9 @@ acceptance("Chat Integration", function (needs) {
 
     // Press enter
     await triggerKeyEvent(
-      "#chat-integration-edit-channel-modal input",
+      "#chat-integration-edit-channel-modal",
       "keydown",
-      13
+      "Enter"
     );
 
     assert.notOk(
@@ -205,10 +205,10 @@ acceptance("Chat Integration", function (needs) {
     );
     await click(".channel-header .delete-channel");
 
-    assert.ok(exists("div.bootbox"), "modal is displayed");
-    await click("div.bootbox .btn-primary");
+    assert.ok(exists("div.dialog-content"), "modal is displayed");
+    await click("div.dialog-content .btn-danger");
 
-    assert.notOk(exists("div.bootbox"), "modal has closed");
+    assert.notOk(exists("div.dialog-content"), "modal has closed");
   });
 
   test("Delete rule works", async function (assert) {

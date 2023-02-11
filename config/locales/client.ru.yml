@@ -105,6 +105,15 @@ ru:
             webhook_url:
               title: URL вебхука
               help: URL-адрес вебхука, созданный в настройках сервера Discord
+        guilded:
+          title: "Guilded"
+          param:
+            name:
+              title: "Название"
+              help: "Имя для описания канала. Оно не используется для подключения к Guilded"
+            webhook_url:
+              title: URL вебхука
+              help: URL-адрес вебхука, созданный в настройках сервера Guilded
         mattermost:
           title: "Mattermost"
           param:
@@ -187,7 +196,6 @@ ru:
               help: "Название пространства для общения, например, 'discourse'"
             webhook_url:
               title: "URL вебхука"
-              help: "URL-адрес, указанный при создании нового входящего вебхука"
           errors:
             invalid_channel: "Этот канал не существует в Webex"
         google:
@@ -199,3 +207,14 @@ ru:
             webhook_url:
               title: "URL вебхука"
               help: "URL-адрес, указанный при создании нового вебхука"
+    discourse_automation:
+      scriptables:
+        send_slack_message:
+          title: Отправить Slack-сообщение
+          fields:
+            message:
+              label: Сообщение
+            url:
+              label: URL
+            channel:
+              label: Канал
