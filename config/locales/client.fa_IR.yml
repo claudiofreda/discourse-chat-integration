@@ -38,6 +38,7 @@ fa_IR:
         mute: 'بی صدا'
         follow: 'فقط اولین نوشته'
         watch: 'همه نوشته‌ها و پاسخ‌ها'
+        tag_added: 'برچسب به موضوع اضافه شد'
       rule_table:
         filter: "فیلتر"
         category: "دسته‌بندی"
@@ -79,6 +80,8 @@ fa_IR:
           param:
             name:
               title: "نام"
+            webhook_url:
+              title: نشانی اینترنتی وب‌هوک
         guilded:
           title: "Guilded"
           param:
@@ -92,6 +95,7 @@ fa_IR:
           param:
             identifier:
               title: کانال
+              help: "به عنوان مثال #channel، @username."
         matrix:
           param:
             name:
@@ -104,22 +108,31 @@ fa_IR:
           param:
             identifier:
               title: کانال
+              help: "به عنوان مثال #channel، @username."
         gitter:
           param:
             name:
               title: "نام"
+            webhook_url:
+              title: "نشانی اینترنتی وب‌هوک"
         teams:
           param:
             name:
               title: "نام"
+            webhook_url:
+              title: "نشانی اینترنتی وب‌هوک"
         webex:
           param:
             name:
               title: "نام"
+            webhook_url:
+              title: "نشانی اینترنتی وب‌هوک"
         google:
           param:
             name:
               title: "نام"
+            webhook_url:
+              title: "نشانی اینترنتی وب‌هوک"
     discourse_automation:
       scriptables:
         send_slack_message:
