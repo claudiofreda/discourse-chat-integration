@@ -1,32 +1,29 @@
+import { inject as service } from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import DiscourseRoute from "discourse/routes/discourse";
-import { next } from "@ember/runloop";
 
-export default class Trascript extends DiscourseRoute {
-  model(params) {
-    if (this.currentUser) {
-      const secret = params.secret;
+export default class Transcript extends DiscourseRoute {
+  @service currentUser;
+  @service composer;
+  @service router;
 
-      this.replaceWith("discovery.latest").then((e) => {
-        if (this.controllerFor("navigation/default").get("canCreateTopic")) {
-          next(() => {
-            ajax(`chat-transcript/${secret}`).then((result) => {
-              e.send(
-                "createNewTopicViaParams",
-                null,
-                result["content"],
-                null,
-                null,
-                null
-              );
-            }, popupAjaxError);
-          });
-        }
-      });
-    } else {
+  async model(params) {
+    if (!this.currentUser) {
       this.session.set("shouldRedirectToUrl", window.location.href);
-      this.replaceWith("login");
+      this.router.replaceWith("login");
+      return;
+    }
+
+    await this.router.replaceWith("discovery.latest").followRedirects();
+
+    try {
+      const result = await ajax(`/chat-transcript/${params.secret}`);
+      this.composer.openNewTopic({
+        body: result.content,
+      });
+    } catch (e) {
+      popupAjaxError(e);
     }
   }
 }

@@ -1,0 +1,32 @@
+{{#if this.anyErrors}}
+  <div class="error">
+    {{d-icon "exclamation-triangle"}}
+    <span class="error-message">
+      {{i18n "chat_integration.channels_with_errors"}}
+    </span>
+  </div>
+{{/if}}
+
+{{#each this.model.channels.content as |channel|}}
+  <ChannelDetails
+    @channel={{channel}}
+    @provider={{this.model.provider}}
+    @refresh={{this.refresh}}
+    @editChannel={{this.editChannel}}
+    @test={{this.testChannel}}
+    @createRule={{this.createRule}}
+    @editRuleWithChannel={{this.editRuleWithChannel}}
+    @showError={{this.showError}}
+  />
+{{/each}}
+
+<div class="table-footer">
+  <div class="pull-right">
+    <DButton
+      @action={{fn this.createChannel this.model.provider}}
+      @label="chat_integration.create_channel"
+      @icon="plus"
+      id="create-channel"
+    />
+  </div>
+</div>

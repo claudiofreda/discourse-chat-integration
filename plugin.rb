@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 # name: discourse-chat-integration
-# about: This plugin integrates discourse with a number of chat providers
+# about: Allows integration with several external chat system providers
+# meta_topic_id: 66522
 # version: 0.1
 # url: https://github.com/discourse/discourse-chat-integration
 # author: David Taylor
-# transpile_js: true
 
 enabled_site_setting :chat_integration_enabled
 
-register_asset "stylesheets/chat-integration-admin.scss"
+register_asset "stylesheets/chat-integration.scss"
 
 register_svg_icon "rocket" if respond_to?(:register_svg_icon)
 register_svg_icon "fa-arrow-circle-o-right" if respond_to?(:register_svg_icon)
@@ -20,6 +20,26 @@ require_relative "lib/discourse_chat_integration/provider/slack/slack_enabled_se
 after_initialize do
   require_relative "app/initializers/discourse_chat_integration"
 
+  require_relative "app/services/problem_check/channel_errors"
+
+  register_problem_check ProblemCheck::ChannelErrors
+
+  on(:site_setting_changed) do |setting_name, old_value, new_value|
+    is_enabled_setting = setting_name == :chat_integration_telegram_enabled
+    is_access_token = setting_name == :chat_integration_telegram_access_token
+
+    if (is_enabled_setting || is_access_token)
+      enabled =
+        is_enabled_setting ? new_value == true : SiteSetting.chat_integration_telegram_enabled
+
+      if enabled && SiteSetting.chat_integration_telegram_access_token.present?
+        Scheduler::Defer.later("Setup Telegram Webhook") do
+          DiscourseChatIntegration::Provider::TelegramProvider.setup_webhook
+        end
+      end
+    end
+  end
+
   on(:post_created) do |post|
     # This will run for every post, even PMs. Don't worry, they're filtered out later.
     time = SiteSetting.chat_integration_delay_seconds.seconds
@@ -27,22 +47,6 @@ after_initialize do
   end
 
   add_admin_route "chat_integration.menu_title", "chat-integration"
-
-  AdminDashboardData.add_problem_check do
-    next if !SiteSetting.chat_integration_enabled
-
-    error = false
-    DiscourseChatIntegration::Channel.find_each do |channel|
-      next if channel.error_key.blank?
-      next if !::DiscourseChatIntegration::Provider.is_enabled(channel.provider)
-      error = true
-    end
-
-    if error
-      base_path = Discourse.respond_to?(:base_path) ? Discourse.base_path : Discourse.base_uri
-      I18n.t("chat_integration.admin_error", base_path: base_path)
-    end
-  end
 
   DiscourseChatIntegration::Provider.mount_engines
 
